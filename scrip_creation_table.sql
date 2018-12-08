@@ -301,3 +301,143 @@ CREATE TABLE faxineiro (
 	codigo_funcionario		VARCHAR(11),	-- PK | FK
     area_responsabilidade	VARCHAR(100)
 );
+
+CREATE TABLE fiscal_prova (
+	codigo_funcionario	VARCHAR(11),	-- PK | FK
+    curriculo			VARCHAR(2000)	-- talvez ser um BLOB pra armazenar arquivo
+);
+
+CREATE TABLE seguranca (
+	codigo_funcionario	VARCHAR(11),	-- PK | FK
+    turno				ENUM(	'manhã',
+								'tarde',
+								'noite' )
+);
+
+CREATE TABLE escala_securanca (
+	codigo_seguranca	VARCHAR(11),	-- PK | FK
+    dia					DATE,
+    horario_inicio		TIME,
+    horario_fim			TIME
+);
+
+CREATE TABLE secretario (
+	codigo_funcionario	VARCHAR(11),	-- PK | FK
+    local_atual			VARCHAR(100),
+    descricao_atividade	VARCHAR(200)
+);
+
+CREATE TABLE juros (
+	codigo		INT,	-- PK
+    taxa		FLOAT,
+    tipo		ENUM('simples', 'composto'),
+    descricao	VARCHAR(200)
+);
+
+CREATE TABLE projeto (
+	codigo			INT,	-- PK
+    titulo			VARCHAR(50),
+    tema			VARCHAR(100),
+    tipo			VARCHAR(50),
+    situacao		VARCHAR(50),
+    data_inicio		DATE,
+    data_fim		DATE,
+    resumo			VARCHAR(300),
+    area			INT,	-- FK
+    subarea			INT,	-- FK
+    orientado_por	INT,	-- FK
+    coorientado_por	INT		-- FK
+);
+
+CREATE TABLE docs (
+	codigo		INT,	-- PK
+    documento	BLOB
+);
+
+CREATE TABLE bolsista (
+	codigo_aluno		INT,	-- PK | FK
+    ano_inicio			DATE,
+    ano_fim				DATE,
+    valor_bolsa			FLOAT,
+    orgao_financiador	VARCHAR(100)
+);
+
+CREATE TABLE voluntario (
+	codigo_aluno		INT,	-- PK | FK
+    carga_horaria		FLOAT
+);
+
+CREATE TABLE projeto_tem_aluno (
+	codigo_projeto		INT,	-- PK | FK
+    codigo_faluno		INT		-- PK | FK
+);
+
+CREATE TABLE pessoa_fisica (
+	cpf					VARCHAR(11),	-- PK
+    nome				VARCHAR(100),
+    data_nascimento		DATE,
+    telefone_fixo		VARCHAR(11),
+    telefone_movel		VARCHAR(12),
+    rg					VARCHAR(7),
+    uf					VARCHAR(2),
+    orgao_expedidor		VARCHAR(50),
+    idade				INT,
+    sexo				VARCHAR(1),
+    endereco			VARCHAR(8)		-- FK
+);
+
+CREATE TABLE usuario (
+	codigo_pessoa	VARCHAR(11),	-- PK | FK
+    login			VARCHAR(50),	-- PK
+    senha			VARCHAR(50),	-- PK
+    email			VARCHAR(50)
+);
+
+CREATE TABLE funcionario (
+	codigo_pessoa	VARCHAR(11),	-- PK | FK
+    salario			FLOAT,
+    em_ferias		BOOLEAN,
+    horas_semana	INT,
+    grau_formacao	VARCHAR(50)
+);
+
+CREATE TABLE beneficio (
+	codigo				INT,		-- PK
+    taxa				FLOAT,
+    descricao			VARCHAR(200),
+    valor				FLOAT,
+    ano_mes				DATE,
+    codigo_funcionario	VARCHAR(11)	-- FK
+);
+
+CREATE TABLE trabalho_academico (
+	codigo			INT,	-- PK
+    titulo			VARCHAR(50),
+	resumo			VARCHAR(300),
+    area			INT,	-- FK
+    subarea			INT	-- FK
+);
+
+CREATE TABLE banca_examinadora (
+	codigo_trabalho_academico	INT,	-- PK | FK
+    descricao					VARCHAR(200)
+);
+
+CREATE TABLE tcc (
+	codigo_trabalho_academico	INT	-- PK | FK
+);
+
+CREATE TABLE dissertacao (
+	codigo_trabalho_academico	INT	-- PK | FK
+);
+
+CREATE TABLE parcela (
+	sequencial		INT,	-- PK
+    pagamento		INT,	-- PK | FK
+    data_geracao	DATE,
+    data_pagamento	DATE,
+    valor_pago		FLOAT,
+    data_vencimento	DATE,
+    pago			BOOLEAN,
+    juros			INT		-- FK
+);
