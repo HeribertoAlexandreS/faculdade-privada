@@ -226,35 +226,35 @@ INSERT INTO TRILHA (descricao, codigo_area)
 VALUES ('Direito para empresas', 5);
 
 -- DISCIPLINA
-INSERT INTO DISCIPLINA(codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA(nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES (1381 ,'Álgebra Linear', 'Introdução a álgebra linear', 'Disciplina contem vetores, 
+VALUES ('Álgebra Linear', 'Introdução a álgebra linear', 'Disciplina contem vetores, 
 		matrizes etc', 1, 0, 4, 2, 'OBRIGATORIA', 60, 2, 2);
-INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES (1840, 'Banco de Dados', 'Disciplina sobre SGBDs e representação de um sistema em dados',
+VALUES ('Banco de Dados', 'Disciplina sobre SGBDs e representação de um sistema em dados',
 		'Modelo entidade-relacionamento, Modelo Relacional, Modelo Físico, MySQL', 1, 0,
         4, 4, 'OBRIGATORIA', 60, 1, 4);
-INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES (3821, 'História e Arte da Grécia', 'Disciplina sobre a rica cultura da Grécia', 'História
+VALUES ('História e Arte da Grécia', 'Disciplina sobre a rica cultura da Grécia', 'História
 		da Grécia desde o século XIX até hoje', 0, 1, 8, 3, 'OPTATIVA', 120, 4, 3);
-INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES (7846, 'Direito Bancário', 'Regras e princípios de atividades bancárias', 'Recepção de 
+VALUES ('Direito Bancário', 'Regras e princípios de atividades bancárias', 'Recepção de 
 		depósitos, empréstimo de fundos, e outras operações ativas e passivas', 1, 0, 4, 7,
         'OPTATIVA', 40, 5, 2);
-INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES (4381, 'Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme, movimento
+VALUES ('Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme, movimento
 		uniformemente variado e movimento circular', 1, 0, 4, 1, 'OBRIGATORIA', 60, 3, 2);
 
 -- PRE REQUISITO
 INSERT INTO PRE_REQUISITO
-VALUES	(1381, 4381),
-		(1840, 1381),
-        (1840, 7846),
-        (7846, 3821);
+VALUES	(1, 2),
+		(2, 3),
+        (3, 2),
+        (3, 4);
 
 -- CO REQUISITO
 
