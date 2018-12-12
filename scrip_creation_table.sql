@@ -1,5 +1,6 @@
 -- To acquire permissions to use this database execute as root user:
 -- GRANT ALL ON faculdade_privada.* TO 'your_username'@'host_address_ip(localhost)';
+
 CREATE DATABASE faculdade_privada;
 USE faculdade_privada;
 
@@ -235,13 +236,12 @@ CREATE TABLE HORARIO_OFERTA (
 CREATE TABLE ALUNO_OFERTA (
 	cpf_aluno			VARCHAR(11) NOT NULL,
     sequencial_oferta	INT NOT NULL,
-    cod_disciplina		INTEGER NOT NULL,
     frequencia			INT,
     nota_1				DOUBLE(2, 2),
     nota_2				DOUBLE(2, 2),
 	final				DOUBLE(2, 2),
     FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
-    FOREIGN KEY(cod_disciplina, sequencial_oferta) REFERENCES OFERTA(codigo_disciplina, sequencial),
+    FOREIGN KEY(sequencial_oferta) REFERENCES OFERTA(sequencial),
     CONSTRAINT pk_aluno_oferta PRIMARY KEY(cpf_aluno, sequencial_oferta, cod_disciplina)
 );
 

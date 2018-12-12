@@ -65,6 +65,8 @@ INSERT INTO AREA_CONHECIMENTO (descricao)
 VALUES ('História');
 INSERT INTO AREA_CONHECIMENTO (descricao)
 VALUES ('Direito');
+INSERT INTO AREA_CONHECIMENTO (descricao)
+VALUES ('Antropologia');
 
 -- SUBAREA_CONHECIMENTO
 INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
@@ -77,6 +79,8 @@ INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
 VALUES ('História do Brasil', 4);
 INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
 VALUES ('Direito Penal', 5);
+INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
+VALUES ('Antropologia Social e Filosófica', 6);
 
 -- FACULDADE
 INSERT INTO FACULDADE
@@ -94,6 +98,8 @@ VALUES ('94500853000136', 'Universidade de São Paulo', 1,
 INSERT INTO FACULDADE
 VALUES ('05280452000198', 'Uninassau', 0, 
 		'32324846', '37213034', 'uninassau@uninassau.com.br', '51021140', '1320');
+        
+-- TODO CALENDARIO_ACADEMICO
 
 -- USUARIO
 INSERT INTO USUARIO (cpf, login, senha, email, nome, dt_nasc, idade, sexo, telefone, cep_endereco)
@@ -134,19 +140,11 @@ VALUES ('72846394721', 'tavares', 'senha11', 'tavares@hotmail.com',
 -- ALUNO
 INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
 		data_inic)
-VALUES ('08723738430', '2749274937', '2017-01-05', '2017', '2017-05-18');
-INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
-		data_inic)
-VALUES ('71907636005', '6427274963', '2017-01-05', '2017', '2017-05-18');
-INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
-		data_inic)
-VALUES ('76123754009', '32939375963', '2016-06-05', '2016', '2016-08-18');
-INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
-		data_inic)
-VALUES ('89318239084', '27339385963', '2016-06-05', '2016', '2016-08-18');
-INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
-		data_inic)
-VALUES ('08792462006', '48265385963', '2016-01-05', '2016', '2016-02-18');
+VALUES	('08723738430', '2749274937', '2017-01-05', '2017', '2017-05-18'),
+		('71907636005', '6427274963', '2017-01-05', '2017', '2017-05-18'),
+        ('76123754009', '32939375963', '2016-06-05', '2016', '2016-08-18'),
+        ('89318239084', '27339385963', '2016-06-05', '2016', '2016-08-18'),
+        ('08792462006', '48265385963', '2016-01-05', '2016', '2016-02-18');
 
 -- DEPARTAMENTO
 INSERT INTO DEPARTAMENTO (nome, telefone, email, sigla, cnpj_faculdade)
@@ -228,32 +226,35 @@ INSERT INTO TRILHA (descricao, codigo_area)
 VALUES ('Direito para empresas', 5);
 
 -- DISCIPLINA
-INSERT INTO DISCIPLINA(nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA(codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES ('Álgebra Linear', 'Introdução a álgebra linear', 'Disciplina contem vetores, 
+VALUES (1381 ,'Álgebra Linear', 'Introdução a álgebra linear', 'Disciplina contem vetores, 
 		matrizes etc', 1, 0, 4, 2, 'OBRIGATORIA', 60, 2, 2);
-INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES ('Banco de Dados', 'Disciplina sobre SGBDs e representação de um sistema em dados',
+VALUES (1840, 'Banco de Dados', 'Disciplina sobre SGBDs e representação de um sistema em dados',
 		'Modelo entidade-relacionamento, Modelo Relacional, Modelo Físico, MySQL', 1, 0,
         4, 4, 'OBRIGATORIA', 60, 1, 4);
-INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES ('História e Arte da Grécia', 'Disciplina sobre a rica cultura da Grécia', 'História
+VALUES (3821, 'História e Arte da Grécia', 'Disciplina sobre a rica cultura da Grécia', 'História
 		da Grécia desde o século XIX até hoje', 0, 1, 8, 3, 'OPTATIVA', 120, 4, 3);
-INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES ('Direito Bancário', 'Regras e princípios de atividades bancárias', 'Recepção de 
+VALUES (7846, 'Direito Bancário', 'Regras e princípios de atividades bancárias', 'Recepção de 
 		depósitos, empréstimo de fundos, e outras operações ativas e passivas', 1, 0, 4, 7,
         'OPTATIVA', 40, 5, 2);
-INSERT INTO DISCIPLINA (nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
+INSERT INTO DISCIPLINA (codigo, nome, descricao, ementa, e_graduacao, e_pos_graduacao, creditos,
 	periodo_indicado, tipo, carga_horaria, cod_trilha, cod_curso)
-VALUES ('Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme, movimento
+VALUES (4381, 'Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme, movimento
 		uniformemente variado e movimento circular', 1, 0, 4, 1, 'OBRIGATORIA', 60, 3, 2);
 
 -- PRE REQUISITO
 INSERT INTO PRE_REQUISITO
-VALUES (7, 1);
+VALUES	(1381, 4381),
+		(1840, 1381),
+        (1840, 7846),
+        (7846, 3821);
 
 -- CO REQUISITO
 
@@ -288,3 +289,43 @@ INSERT INTO HORARIO_OFERTA
 VALUES (1, 1, '08:00', '10:00', 1);
 INSERT INTO HORARIO_OFERTA
 VALUES (6, 4, '18:00', '20:00', 2);
+
+-- ALUNO_OFERTA
+INSERT INTO ALUNO_OFERTA (cpf_aluno, sequencial_oferta, frequencia,
+							nota_1, nota_2, final)
+VALUES	('08723738430', 1, 0.87, 8, 8),
+		('71907636005', 2, 0.79, 5, 3, 6),
+        ('76123754009', 3, 0.94, 7, 9),
+        ('08723738430', 4, 0.50, 5, 1, 4),
+        ('71907636005', 1, 0.83, 6, 7, 8);
+
+-- BIBLIOTECA
+INSERT INTO BIBLIOTECA (codigo, faculdade, nome, data_criacao)
+VALUES	('91697364000128', 'Biblioteca de Ciências Sociais Aplicadas', 1994-05-12),
+		('91697364000128', 'Biblioteca de Matemática Estatística e Informática', 2005-09-27),
+        ('43198423000170', 'Biblioteca George Alexander', 1927-02-01),
+        ('05280452000198', 'Biblioteca', 2015-05-24),
+        ('94500853000136', 'Biblioteca de Engenharia Civil', 1997-07-09);
+
+-- TIPO_EMPRESTIMO
+INSERT INTO TIPO_EMPRESTIMO (codigo, descricao, valor_multa_diaria)
+VALUES	('Empréstimo para estudantes de Graduação', 1.5),
+		('Empréstimo para estudantes de Pós-Graduação', 3.0);
+
+-- SALA_BIBLIOTECA
+INSERT INTO SALA_BIBLIOTECA (numero, descricao, estado, codigo_biblioteca, tipo)
+VALUES	('Sala com ar-condicionado e sem quadro branco', 'LIVRE', 1, 'ESTUDO'),
+		('Sala sem ar-condicionado e com quadro branco', 'OCUPADA', 1, 'ESTUDO'),
+		('Sala com ar-condicionado e com quadro branco', 'LIVRE', 2, 'ESTUDO'),
+		('Sala com caixa de som e um datashow', 'RESERVADA', 4, 'EVENTO'),
+        ('Sala com ar-condicionado e sem quadro branco', 'LIVRE', 1, 'ESTUDO');
+
+INSERT INTO LIVRO (codigo, titulo, genero, isbn, ano_publicacao,
+					editora, edicao, autor, numero_exemplares,
+					codigo_area, codigo_biblioteca)
+VALUES	('Cartas de um diabo a seu aprendiz', 'antropologia, filosofia e teologia', '9788578271114', 2009, 'Thomas Nelson Brasil', 2, 'CS Lewis', 10, 6, 1),
+		('The Cronicles of Narnia', 'aventura', '9780066238500', 2016, 'HarperCollins', 1, 'CS Lewis', 20, 1),
+        ('Cálculo - Volume 1', 'Ciências', '8522112584', 2013, 'Cengage', 7, 'James Stewart', 24, 1, 2),
+        ('Cálculo - Volume 2', 'Ciências', '8522112592', 2013, 'Cengage', 7, 'James Stewart', 12, 1, 2),
+        ('Álgebra Linear com Aplicações', 'Ciências', '8540701693', 2012, 'Bookman', 10, 'H. Anton, C. Rorres', 15, 1, 2);
+        
