@@ -1,6 +1,6 @@
 -- To acquire permissions to use this database execute as root user:
 -- GRANT ALL ON faculdade_privada.* TO 'your_username'@'host_address_ip(localhost)';
-
+CREATE DATABASE faculdade_privada;
 USE faculdade_privada;
 
 SHOW TABLES;
@@ -8,436 +8,544 @@ SHOW TABLES;
 
 -- MER_Faculdade_Privada_1_Final
 
-CREATE TABLE area_conhecimento (
-	codigo		INT,		-- PK
-    descricao	VARCHAR(200)
+CREATE TABLE ENDERECO (
+	cep			VARCHAR(8) NOT NULL,
+    cidade		VARCHAR(30),
+    estado		VARCHAR(30),
+    edicicio	VARCHAR(50),
+    logradouro	TEXT,
+    PRIMARY KEY(cep)
 );
 
-CREATE TABLE subarea_conhecimento (
-	codigo		INT(10),	-- PK
-    descricao	VARCHAR(200),
-    codigo_area	INT(10)		-- FK
+CREATE TABLE LOCALIZACAO (
+	id			INTEGER NOT NULL AUTO_INCREMENT,
+    predio		TEXT,
+    andar		VARCHAR(2),
+    num_sala	INT,
+    PRIMARY KEY(id)
 );
 
-CREATE TABLE faculdade (
-	cnpj				VARCHAR(14),	-- PK
-    nome				VARCHAR(50),
-    codigo_biblioteca	INT,			-- FK
-    telefone			VARCHAR(10),
+CREATE TABLE AREA_CONHECIMENTO (
+	codigo		INTEGER NOT NULL AUTO_INCREMENT,
+    descricao	VARCHAR(1500),
+    PRIMARY KEY (codigo)
+);
+
+CREATE TABLE SUBAREA_CONHECIMENTO (
+	codigo		INTEGER NOT NULL AUTO_INCREMENT,
+    descricao	TEXT,
+    codigo_area	INTEGER,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+);
+
+CREATE TABLE FACULDADE (
+	cnpj				VARCHAR(14) NOT NULL,
+    nome_fantasia		VARCHAR(50),
+    possui_biblioteca	BOOLEAN,
+    telefone_1			VARCHAR(15), 
+    telefone_2			VARCHAR(15),
     email				VARCHAR(50),
-    cep					VARCHAR(8)		-- FK
+    cep					VARCHAR(8) NOT NULL,
+    num_end				VARCHAR(5),
+    PRIMARY KEY(cnpj),
+    FOREIGN KEY(cep) REFERENCES ENDERECO(cep)
 );
 
-CREATE TABLE calendario_academico (
-	data_ref	 		DATE,		-- PK 
+CREATE TABLE CALENDARIO_ACADEMICO (
+	data_ref	 		DATE NOT NULL,		 
     data_evento 		DATE,
     data_inicio			DATE,
     data_fim			DATE,
-    localizacao			VARCHAR(50),
+    local_id			INTEGER,
     e_feriado			BOOLEAN,
-    descricao_feriado	VARCHAR(100),
-    descricao_item		VARCHAR(100),	-- nao entendi
+    descricao_feriado	TEXT,
+    descricao_item		TEXT,
     evento				VARCHAR(100),
-    cnpj_faculdade		VARCHAR(14)		-- FK
+    cnpj_faculdade		VARCHAR(14),
+    PRIMARY KEY(data_ref),
+    FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id),
+    FOREIGN KEY(cnpj_faculdade) REFERENCES FACULDADE(cnpj)
 );
 
-CREATE TABLE endereco (
-	cep			VARCHAR(8),		-- PK
-    cidade		VARCHAR(30),
-    estado		VARCHAR(30),
-    edicicio	VARCHAR(30),
-    logradouro	VARCHAR(30)
+CREATE TABLE USUARIO (
+	cpf				VARCHAR(11) NOT NULL,
+    login			VARCHAR(50),	
+    senha			VARCHAR(50),	
+    email			VARCHAR(50),
+    nome			VARCHAR(80), 
+    cv_lattes		BLOB, 
+    dt_nasc			DATE, 
+    idade			INT(3), 
+    sexo			ENUM('F','M'), 
+    RG				VARCHAR(20), 
+    telefone		VARCHAR(15), 
+    cep_endereco	VARCHAR(8) NOT NULL,  
+    num_end			VARCHAR(5),
+    PRIMARY KEY(cpf),
+    FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
 );
 
-CREATE TABLE aluno (
-    numero_matricula	INT,		-- PK
+CREATE TABLE ALUNO (
+	cpf_usuario			VARCHAR(11) NOT NULL,
+    numero_matricula	TEXT,
     data_matricula		DATE,
-	codigo_usuario		INT,		-- FK
+    ano_sem_entrada		YEAR,
     e_bolsista			BOOLEAN,
-    descricao_bolsa		VARCHAR(200),
-    situacao			VARCHAR(50)
+    org_finan_bolsa		VARCHAR(50),
+    data_inic			DATE,
+    data_fim			DATE,
+    valor_bolsa			DOUBLE(37, 2),
+    situacao			VARCHAR(50),
+    PRIMARY KEY(cpf_usuario),
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf)
 );
 
-CREATE TABLE professor (
-    numero_registro		INT,		-- PK
-    salario				FLOAT,
+CREATE TABLE DEPARTAMENTO (
+	codigo					INTEGER NOT NULL AUTO_INCREMENT,
+    nome					VARCHAR(80),
+    telefone				VARCHAR(15),
+    email					VARCHAR(50),
+    sigla					VARCHAR(10),
+    cnpj_faculdade			VARCHAR(14),
+    data_inicio_professor	DATE,
+    data_fim_professor		DATE,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(cnpj_faculdade) REFERENCES FACULDADE(cnpj)
+);
+
+CREATE TABLE PROFESSOR (
+	cpf_usuario			VARCHAR(11) NOT NULL,
+    numero_registro		VARCHAR(10),
+    salario				DOUBLE(37, 2),
     especialidade		VARCHAR(50),
     data_admissao		DATE,
-    codigo_area			INT,		-- FK
+    codigo_area			INTEGER,
     nivel				INT,
-    classe				VARCHAR(30)
+    classe				VARCHAR(30),
+    cod_dept			INTEGER,
+    e_diretor			BOOLEAN,
+    PRIMARY KEY(cpf_usuario),
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(cod_dept) REFERENCES DEPARTAMENTO(codigo)
 );
 
-CREATE TABLE departamento (
-	codigo					INT,		-- PK
-    nome					VARCHAR(50),
-    telefone				VARCHAR(10),
+CREATE TABLE CURSO (
+	codigo					INTEGER NOT NULL AUTO_INCREMENT,	
+    descricao				TEXT,
     email					VARCHAR(50),
-    sigla					VARCHAR(15),
-    cnpj_faculdade			VARCHAR(14),	-- FK
-    professor_diretor		INT,		-- FK
-    data_inicio_professor	DATE,
-    data_fim_professor		DATE
-);
-
-CREATE TABLE curso (
-	codigo					INT,	-- PK
-    descricao				VARCHAR(100),
-    email					VARCHAR(50),
-    turno					ENUM(	'manhã',
-									'tarde',
-									'noite' ),
+    turno					ENUM(	'MATUTINO',
+									'VESPERTINO',
+									'NOTURNO',
+                                    'INTEGRAL'),
     duracao					INT,
     especialidade			VARCHAR(50),
     vagas					INT,
     carga_horaria			INT,
-    codigo_departamento		INT,		-- FK
-    professor_coordenador	INT,	-- FK
+    codigo_departamento		INTEGER,
+    professor_coordenador	VARCHAR(11) NOT NULL UNIQUE,
     data_inicio_coordenacao	DATE,
-    data_fim_coordenacao	DATE
+    data_fim_coordenacao	DATE,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(codigo_departamento) REFERENCES DEPARTAMENTO(codigo),
+    FOREIGN KEY(professor_coordenador) REFERENCES PROFESSOR(cpf_usuario)
 );
 
-CREATE TABLE disciplina (
-	codigo				INT,			-- PK
-    nome				VARCHAR(50),
-    descricao			VARCHAR(150),
-    ementa				VARCHAR(2000),	-- talvez colocar um BLOB para arquivo
+CREATE TABLE TRILHA (
+	id				INTEGER NOT NULL AUTO_INCREMENT,
+    descricao		TEXT,
+    codigo_area		INTEGER,
+    PRIMARY KEY(id),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+);
+
+CREATE TABLE DISCIPLINA (
+	codigo				INTEGER NOT NULL AUTO_INCREMENT,
+    nome				VARCHAR(80),
+    descricao			TEXT,
+    ementa				TEXT,	-- talvez colocar um BLOB para arquivo
     e_graduacao			BOOLEAN,
     e_pos_graduacao		BOOLEAN,
     creditos			INT,
-    periodo_indicado	INT
+    periodo_indicado	INT,
+    tipo				ENUM(	'OPTATIVA',
+								'OBRIGATORIA'),
+	carga_horaria		INT,
+    cod_trilha			INTEGER,
+    cod_curso			INTEGER,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(cod_trilha) REFERENCES TRILHA(id),
+    FOREIGN KEY(cod_curso) REFERENCES CURSO(codigo)
 );
 
-CREATE TABLE dependencia_disciplina (
-	disciplina_pre_requisito	INT,	-- PK | FK
-    disciplina_co_requisito		INT		-- PK | FK
+CREATE TABLE PRE_REQUISITO (
+	disciplina_principal		INTEGER NOT NULL,
+	disciplina_pre_requisito	INTEGER NOT NULL,
+    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(disciplina_pre_requisito) REFERENCES DISCIPLINA(codigo),
+    CONSTRAINT pk_pre_requisito PRIMARY KEY(disciplina_principal, disciplina_pre_requisito)
 );
 
-CREATE TABLE oferta (
-    sequencial			INT,			-- PK
-	codigo_disciplina	INT,			-- FK
-    ano					INT,
+CREATE TABLE CO_REQUISITO (
+	disciplina_principal		INTEGER NOT NULL,
+	disciplina_co_requisito		INTEGER NOT NULL,
+    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(disciplina_co_requisito) REFERENCES DISCIPLINA(codigo),
+    CONSTRAINT pk_co_requisito PRIMARY KEY(disciplina_principal, disciplina_co_requisito)
+);
+
+CREATE TABLE OFERTA (
+	codigo_disciplina	INTEGER NOT NULL,
+    sequencial			INT NOT NULL,			
+    ano					YEAR,
     vagas				INT,
-    semestre			INT,
-    horario_inicio		TIME,
-    horario_fim			TIME,
-    localizacao			VARCHAR(30),
-    codigo_professor	INT				-- FK
+    semestre			ENUM('1', '2'),
+    local_id			INTEGER,
+    cpf_professor		VARCHAR(11),
+    FOREIGN KEY(codigo_disciplina) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id),
+    FOREIGN KEY(cpf_professor) REFERENCES PROFESSOR(cpf_usuario),
+    CONSTRAINT pk_oferta PRIMARY KEY(codigo_disciplina, sequencial)
 );
 
-CREATE TABLE dia (
-	sequencial_oferta	INT,			-- PK | FK
-    dia					ENUM (	'Domingo',
-								'Segunda',
-                                'Terça',
-                                'Quarta',
-                                'Quinta',
-                                'Sexta',
-                                'Sábado')
+CREATE TABLE DIA (
+	codigo	INTEGER NOT NULL AUTO_INCREMENT,
+    dia		ENUM (	'Domingo',
+					'Segunda',
+                    'Terça',
+                    'Quarta',
+					'Quinta',
+					'Sexta',
+					'Sábado'),
+	PRIMARY KEY(codigo)
 );
 
-CREATE TABLE aluno_oferta (
-	codigo_aluno		INT,		-- PK | FK
-    sequencial_oferta	INT, 		-- PK | FK
-    frequencia			FLOAT,
-    nota_1				FLOAT,
-    nota_2				FLOAT,
-	final				FLOAT
+CREATE TABLE HORARIO_OFERTA (
+	cod_disciplina	INTEGER NOT NULL,
+    sequencial		INT NOT NULL,
+    hr_inicio		TIME NOT NULL,
+    hr_fim			TIME,
+    dia				INTEGER,
+    FOREIGN KEY(cod_disciplina) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(dia) REFERENCES DIA(codigo),
+	CONSTRAINT pk_horario_oferta PRIMARY KEY(cod_disciplina, sequencial, hr_inicio)
 );
 
-CREATE TABLE biblioteca (
-	codigo			INT,	-- PK
-    faculdade		INT,	-- FK
-    nome			VARCHAR(50),
-    data_criacao	DATE
+CREATE TABLE ALUNO_OFERTA (
+	cpf_aluno			VARCHAR(11) NOT NULL,
+    sequencial_oferta	INT NOT NULL,
+    cod_disciplina		INTEGER NOT NULL,
+    frequencia			INT,
+    nota_1				DOUBLE(2, 2),
+    nota_2				DOUBLE(2, 2),
+	final				DOUBLE(2, 2),
+    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
+    FOREIGN KEY(cod_disciplina, sequencial_oferta) REFERENCES OFERTA(codigo_disciplina, sequencial),
+    CONSTRAINT pk_aluno_oferta PRIMARY KEY(cpf_aluno, sequencial_oferta, cod_disciplina)
 );
 
-CREATE TABLE tipo_emprestimo (
-	codigo				INT,	-- PK
-    descricao			VARCHAR(50),
-	valor_multa_diaria	FLOAT
+CREATE TABLE BIBLIOTECA (
+	codigo			INTEGER NOT NULL AUTO_INCREMENT,
+    faculdade		VARCHAR(14),
+    nome			VARCHAR(80),
+    data_criacao	DATE,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(faculdade) REFERENCES FACULDADE(cnpj)
 );
 
-CREATE TABLE sala_biblioteca (
-	numero				INT,			-- PK
-    descricao			VARCHAR(100),
-    estado				ENUM(	'livre',
-								'ocupada',
-								'agendada',
-								'fechada' ),
-	codigo_biblioteca	INT			-- FK
+CREATE TABLE TIPO_EMPRESTIMO (
+	codigo				INTEGER NOT NULL AUTO_INCREMENT,
+    descricao			TEXT,
+	valor_multa_diaria	DOUBLE(37,2),
+    PRIMARY KEY(codigo)
 );
 
-CREATE TABLE livro (
-	codigo				INT,		-- PK
-    titulo				VARCHAR(50),
+CREATE TABLE SALA_BIBLIOTECA (
+	numero				INTEGER NOT NULL AUTO_INCREMENT,			-- PK
+    descricao			TEXT,
+    estado				ENUM(	'LIVRE',
+								'OCUPADA',
+								'RESERVADA',
+								'FECHADA' ),
+	codigo_biblioteca	INTEGER,
+    tipo				ENUM(	'EVENTO',
+								'ESTUDO'),
+    PRIMARY KEY(numero),
+    FOREIGN KEY(codigo_biblioteca) REFERENCES BIBLIOTECA(codigo)
+);
+
+CREATE TABLE LIVRO (
+	codigo				INTEGER NOT NULL AUTO_INCREMENT,
+    titulo				VARCHAR(80),
     genero				VARCHAR(50),
     isbn				VARCHAR(13),
-    ano_publicacao		DATE,
-    editora				VARCHAR(50),
+    ano_publicacao		YEAR,
+    editora				VARCHAR(80),
     edicao				INT,
-    autor				VARCHAR(50),
+    autor				VARCHAR(80),
     numero_exemplares	INT,
-    codigo_area			INT,		-- FK
-    codigo_biblioteca	INT			-- FK
+    codigo_area			INTEGER,		-- FK
+    codigo_biblioteca	INTEGER,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(codigo_biblioteca) REFERENCES BIBLIOTECA(codigo)
 );
 
-CREATE TABLE tipo_emprestimo (
-	codigo				INT,		-- PK
-    descricao			VARCHAR(100),
-    valor_multa_diaria	FLOAT
-);
-
-CREATE TABLE prateleira (
-	codigo		INT,	-- PK
+CREATE TABLE PRATELEIRA (
+	codigo		INTEGER NOT NULL AUTO_INCREMENT,
 	nivel		INT,
-    descricao	VARCHAR(50)
+    descricao	TEXT,
+    PRIMARY KEY(codigo)
 );
 
-CREATE TABLE exemplar (
-	codigo_livro		INT,	-- PK
-    sequencial			INT,	-- PK
+CREATE TABLE EXEMPLAR (
+	codigo_livro		INTEGER NOT NULL,
+    sequencial			INT NOT NULL,
     esta_emprestado		BOOLEAN,
-    codigo_prateleira	INT		-- FK	
+    codigo_prateleira	INTEGER,
+    FOREIGN KEY(codigo_livro) REFERENCES LIVRO(codigo),
+    FOREIGN KEY(codigo_prateleira) REFERENCES PRATELEIRA(codigo),
+    CONSTRAINT pk_exemplar PRIMARY KEY(codigo_livro, sequencial)
 );
 
-CREATE TABLE reserva (
-	codigo_usuario		INT,	-- PK
-    numero_sala			INT,	-- PK | FK
-    data_reserva		DATE,
+CREATE TABLE RESERVA (
+	cpf_usuario			VARCHAR(11) NOT NULL,
+    numero_sala			INTEGER NOT NULL,
+    data_reserva		DATE NOT NULL,
     hora_inicio			TIME,
-    hora_fim			TIME
+    hora_fim			TIME,
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
+    FOREIGN KEY(numero_sala) REFERENCES SALA_BIBLIOTECA(numero),
+    CONSTRAINT pk_reserva PRIMARY KEY(cpf_usuario, numero_sala, data_reserva)
 );
 
-CREATE TABLE emprestimo (
-	codigo_exemplar		INT,	-- PK
-    codigo_livro		INT,	-- PK
-    codigo_usuario		INT,	-- PK
+CREATE TABLE EMPRESTIMO (
+	codigo_livro		INTEGER NOT NULL,
+    sequencial			INT NOT NULL,
+    cpf_usuario			VARCHAR(11) NOT NULL UNIQUE,
+    cod_tipo			INTEGER NOT NULL UNIQUE,
     data_emprestimo		DATE,
     data_devolucao		DATE,
-    valor_total_multa	FLOAT,
+    valor_total_multa	DOUBLE(37,2),
     foi_pago			BOOLEAN,
-    esta_atrasado		BOOLEAN
-);
-
-CREATE TABLE trilha (
-	identificador	INT,	-- PK
-    descricao		VARCHAR(50),
-    codigo_area		INT	-- FK
+    esta_atrasado		BOOLEAN,
+    FOREIGN KEY(codigo_livro, sequencial) REFERENCES EXEMPLAR(codigo_livro, sequencial),
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
+    FOREIGN KEY(cod_tipo) REFERENCES TIPO_EMPRESTIMO(codigo),
+    CONSTRAINT pk_emprestimo PRIMARY KEY(codigo_livro, sequencial, cpf_usuario, cod_tipo)
 );
 
 -- MER_Faculdade_Privada_2_Final
 
-CREATE TABLE candidato (
-	cpf		VARCHAR(11)		-- PK
+CREATE TABLE CANDIDATO (
+	cpf		VARCHAR(11) NOT NULL,
+	FOREIGN KEY(cpf) REFERENCES USUARIO(cpf),
+    PRIMARY KEY(cpf)
 );
 
-CREATE TABLE inscricao (
-	codigo_curso		INT,			-- PK | FK
-    cpf_candidato		VARCHAR(11),	-- PK | FK
-    valor				FLOAT,
+CREATE TABLE INSCRICAO (
+	codigo_curso		INTEGER NOT NULL,
+    cpf_candidato		VARCHAR(11) NOT NULL,
+    valor				DOUBLE(37,2),
     data_pagamento		DATE,
-    situacao			VARCHAR(50),
-    data_inscricao		DATE
+    situacao			BOOLEAN,
+    data_inscricao		DATE,
+    FOREIGN KEY(codigo_curso) REFERENCES CURSO(codigo),
+    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf),
+    CONSTRAINT pk_inscricao PRIMARY KEY(codigo_curso, cpf_candidato)
 );
 
-CREATE TABLE prova (
-	codigo			INT,	-- PK
-    materia			VARCHAR(50),
-    data_realizacao	DATE,
-    codigo_area		INT,	-- FK
-    codigo_local	INT	-- FK
-);
-
-CREATE TABLE local_prova (
-	codigo			INT,		-- PK
+CREATE TABLE LOCAL_PROVA (
+	codigo			INTEGER NOT NULL AUTO_INCREMENT,
     capacidade		INT,
     numero			INT,
-    descricao		VARCHAR(100),
-    referencia		VARCHAR(200),
+    descricao		TEXT,
+    referencia		TEXT,
     tipo			VARCHAR(50),
-    cep_endereco	VARCHAR(8)	-- FK
+    cep_endereco	VARCHAR(8) NOT NULL,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
 );
 
-CREATE TABLE candidato_realiza_prova (
-	cpf_candidato	VARCHAR(11),	-- PK | FK
-    codigo_prova	INT,			-- PK | FK
-    nota			FLOAT,
-    situacao		VARCHAR(50)
+CREATE TABLE PROVA (
+	codigo			INTEGER NOT NULL AUTO_INCREMENT,
+    materia			VARCHAR(50),
+    data_realizacao	DATE,
+    codigo_area		INTEGER,
+    codigo_local	INTEGER,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(codigo_local) REFERENCES LOCAL_PROVA(codigo)
 );
 
-CREATE TABLE mensalidade (
-	sequencial			INT,	-- PK
-    valor				FLOAT,
+CREATE TABLE CANDIDATO_REALIZA_PROVA (
+	cpf_candidato	VARCHAR(11) NOT NULL,
+    codigo_prova	INTEGER NOT NULL,
+    nota			DOUBLE(2,2),
+    situacao		BOOLEAN,
+    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf),
+    FOREIGN KEY(codigo_prova) REFERENCES PROVA(codigo),
+    CONSTRAINT pk_candidato_realiza_prova PRIMARY KEY(cpf_candidato, codigo_prova)
+);
+
+CREATE TABLE PAGAMENTO (
+	codigo				INTEGER NOT NULL AUTO_INCREMENT,
+    foi_pago			BOOLEAN,
+    data_geracao		DATE,
+    desconto			DOUBLE(37,2),
+    valor_desconto		DOUBLE(37,2),
+    valor_total_final	DOUBLE(37,2),
+    PRIMARY KEY(codigo)
+);
+
+CREATE TABLE MENSALIDADE (
+	sequencial			INT NOT NULL AUTO_INCREMENT,
+    valor				DOUBLE(37,2),
     data_emissao		DATE,
     data_vencimento		DATE,
-    situacao			VARCHAR(50),
-    codigo_aluno		INT,	-- FK
-    codigo_pagamento	INT	-- FK
+    situacao			BOOLEAN,
+    codigo_aluno		VARCHAR(11),
+    codigo_pagamento	INTEGER UNIQUE,
+    PRIMARY KEY(sequencial),
+    FOREIGN KEY(codigo_aluno) REFERENCES ALUNO(cpf_usuario),
+    FOREIGN KEY(codigo_pagamento) REFERENCES PAGAMENTO(codigo)
 );
 
-CREATE TABLE pagamento (
-	codigo				INT,	-- PK
-    situacao			VARCHAR(50),
-    data_geracao		DATE,
-    desconto			FLOAT,
-    valor_desconto		FLOAT,
-    valor_total_final	FLOAT
-);
-
-CREATE TABLE dependente (
-	codigo_funcionario	VARCHAR(11),	-- PK | FK
-    sequencial			INT,			-- PK
-    tipo				ENUM(	'Pai',
-								'Mãe',
-                                'Irmão',
-                                'Cônjuge',
-                                'Filho',
-                                'Outro'),
-	nome				VARCHAR(100)	-- talvez herdar isto de PESSOA
-);
-
-CREATE TABLE faxineiro (
-	codigo_funcionario		VARCHAR(11),	-- PK | FK
-    area_responsabilidade	VARCHAR(100)
-);
-
-CREATE TABLE fiscal_prova (
-	codigo_funcionario	VARCHAR(11),	-- PK | FK
-    curriculo			VARCHAR(2000)	-- talvez ser um BLOB pra armazenar arquivo
-);
-
-CREATE TABLE seguranca (
-	codigo_funcionario	VARCHAR(11),	-- PK | FK
-    turno				ENUM(	'manhã',
-								'tarde',
-								'noite' )
-);
-
-CREATE TABLE escala_securanca (
-	codigo_seguranca	VARCHAR(11),	-- PK | FK
-    dia					DATE,
-    horario_inicio		TIME,
-    horario_fim			TIME
-);
-
-CREATE TABLE secretario (
-	codigo_funcionario	VARCHAR(11),	-- PK | FK
-    local_atual			VARCHAR(100),
-    descricao_atividade	VARCHAR(200)
-);
-
-CREATE TABLE juros (
-	codigo		INT,	-- PK
-    taxa		FLOAT,
-    tipo		ENUM('simples', 'composto'),
-    descricao	VARCHAR(200)
-);
-
-CREATE TABLE projeto (
-	codigo			INT,	-- PK
-    titulo			VARCHAR(50),
-    tema			VARCHAR(100),
-    tipo			VARCHAR(50),
-    situacao		VARCHAR(50),
-    data_inicio		DATE,
-    data_fim		DATE,
-    resumo			VARCHAR(300),
-    area			INT,	-- FK
-    subarea			INT,	-- FK
-    orientado_por	INT,	-- FK
-    coorientado_por	INT		-- FK
-);
-
-CREATE TABLE docs (
-	codigo		INT,	-- PK
-    documento	BLOB
-);
-
-CREATE TABLE bolsista (
-	codigo_aluno		INT,	-- PK | FK
-    ano_inicio			DATE,
-    ano_fim				DATE,
-    valor_bolsa			FLOAT,
-    orgao_financiador	VARCHAR(100)
-);
-
-CREATE TABLE voluntario (
-	codigo_aluno		INT,	-- PK | FK
-    carga_horaria		FLOAT
-);
-
-CREATE TABLE projeto_tem_aluno (
-	codigo_projeto		INT,	-- PK | FK
-    codigo_faluno		INT		-- PK | FK
-);
-
-CREATE TABLE pessoa_fisica (
-	cpf					VARCHAR(11),	-- PK
-    nome				VARCHAR(100),
-    data_nascimento		DATE,
-    telefone_fixo		VARCHAR(11),
-    telefone_movel		VARCHAR(12),
-    rg					VARCHAR(7),
-    uf					VARCHAR(2),
-    orgao_expedidor		VARCHAR(50),
-    idade				INT,
-    sexo				VARCHAR(1),
-    endereco			VARCHAR(8)		-- FK
-);
-
-CREATE TABLE usuario (
-	codigo_pessoa	VARCHAR(11),	-- PK | FK
-    login			VARCHAR(50),	-- PK
-    senha			VARCHAR(50),	-- PK
-    email			VARCHAR(50)
-);
-
-CREATE TABLE funcionario (
-	codigo_pessoa	VARCHAR(11),	-- PK | FK
-    salario			FLOAT,
+CREATE TABLE FUNCIONARIO (
+	cpf				VARCHAR(11),
+    nome			VARCHAR(80),
+    telefone		VARCHAR(15),
+    rg				VARCHAR(20),
+    sexo			ENUM('F', 'M'),
+    idade			INT(3),
+    dt_nasc			DATE,
+    salario			DOUBLE(37,2),
     em_ferias		BOOLEAN,
     horas_semana	INT,
-    grau_formacao	VARCHAR(50)
+    grau_formacao	VARCHAR(50),
+    tipo			ENUM(	'FISCAL DE PROVA',
+							'SEGURANCA',
+                            'FAXINEIRO',
+                            'SECRETARIO'),
+    descricao_ativ	TEXT,
+    turno			ENUM(	'MATUTINO',
+							'VESPERTINO',
+							'NOTURNO',
+                            'INTEGRAL'),
+	escala_incio	TIME,
+    escala_fim		TIME,
+    cep_endereco	VARCHAR(8) NOT NULL,
+    PRIMARY KEY(cpf),
+    FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
 );
 
-CREATE TABLE beneficio (
-	codigo				INT,		-- PK
-    taxa				FLOAT,
-    descricao			VARCHAR(200),
-    valor				FLOAT,
+CREATE TABLE DEPENDENTE (
+	cpf_funcionario		VARCHAR(11) NOT NULL,
+    sequencial			INT NOT NULL,
+    tipo				ENUM(	'PAI',
+								'MAE',
+                                'IRMAO',
+                                'CONJUGE',
+                                'FILHO',
+                                'OUTRO'),
+	nome				VARCHAR(80),
+    FOREIGN KEY(cpf_funcionario) REFERENCES FUNCIONARIO(cpf),
+    CONSTRAINT pk_dependente PRIMARY KEY(cpf_funcionario, sequencial)
+);
+
+CREATE TABLE JURO (
+	codigo		INTEGER NOT NULL AUTO_INCREMENT,
+    taxa		DOUBLE(37,2),
+    tipo		ENUM('SIMPLES', 'COMPOSTO'),
+    descricao	TEXT,
+    PRIMARY KEY(codigo)
+);
+
+CREATE TABLE PROJETO (
+	codigo			INTEGER NOT NULL AUTO_INCREMENT,
+    titulo			VARCHAR(80),
+    tema			VARCHAR(80),
+    tipo			VARCHAR(50),
+    situacao		BOOLEAN,
+    data_inicio		DATE,
+    data_fim		DATE,
+    resumo			TEXT,
+    area			INTEGER NOT NULL,	-- FK
+    subarea			INTEGER NOT NULL,	-- FK
+    orientado_por	VARCHAR(11),	-- FK
+    coorientado_por	VARCHAR(11),
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(orientado_por) REFERENCES PROFESSOR(cpf_usuario),
+    FOREIGN KEY(coorientado_por) REFERENCES PROFESSOR(cpf_usuario)
+);
+
+CREATE TABLE DOCUMENTO (
+	codigo		INTEGER NOT NULL AUTO_INCREMENT,
+    tipo		VARCHAR(20),
+    titulo		VARCHAR(80),
+    dt_criacao	DATE,
+    num_folhas	INT,
+    cod_proj	INTEGER,
+    documento	BLOB,
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(cod_proj) REFERENCES PROJETO(codigo)
+);
+
+CREATE TABLE PROJETO_TEM_ALUNO (
+	codigo_projeto		INTEGER NOT NULL,
+    cpf_aluno			VARCHAR(11) NOT NULL,
+    FOREIGN KEY(codigo_projeto) REFERENCES PROJETO(codigo),
+    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
+    CONSTRAINT pk_projeto_tem_aluno PRIMARY KEY(codigo_projeto, cpf_aluno)
+);
+
+CREATE TABLE BENEFICIO (
+	codigo				INTEGER NOT NULL AUTO_INCREMENT,
+    taxa				DOUBLE(37,2),
+    descricao			TEXT,
+    valor				DOUBLE(37,2),
     ano_mes				DATE,
-    codigo_funcionario	VARCHAR(11)	-- FK
+    cpf_funcionario		VARCHAR(11),
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(cpf_funcionario) REFERENCES FUNCIONARIO(cpf)
 );
 
-CREATE TABLE trabalho_academico (
-	codigo			INT,	-- PK
-    titulo			VARCHAR(50),
-	resumo			VARCHAR(300),
-    area			INT,	-- FK
-    subarea			INT	-- FK
+CREATE TABLE TRABALHO_ACADEMICO (
+	codigo			INTEGER NOT NULL AUTO_INCREMENT,
+    titulo			VARCHAR(80),
+	resumo			TEXT,
+    area			INTEGER,
+    subarea			INTEGER,
+    tipo			ENUM(	'TCC',
+							'DISSERTACAO'),
+	cpf_aluno		VARCHAR(11),
+    PRIMARY KEY(codigo),
+    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario)
 );
 
-CREATE TABLE banca_examinadora (
-	codigo_trabalho_academico	INT,	-- PK | FK
-    descricao					VARCHAR(200)
+CREATE TABLE BANCA_EXAMINADORA (
+	codigo_trabalho_academico	INTEGER NOT NULL UNIQUE,
+    nome_prof_1					VARCHAR(80),
+    nome_prof_2					VARCHAR(80),
+    nome_prof_3					VARCHAR(80),
+    PRIMARY KEY(codigo_trabalho_academico)
 );
 
-CREATE TABLE tcc (
-	codigo_trabalho_academico	INT	-- PK | FK
-);
-
-CREATE TABLE dissertacao (
-	codigo_trabalho_academico	INT	-- PK | FK
-);
-
-CREATE TABLE parcela (
-	sequencial		INT,	-- PK
-    pagamento		INT,	-- PK | FK
+CREATE TABLE PARCELA (
+	sequencial		INT NOT NULL AUTO_INCREMENT,
+    cod_pagamento	INTEGER NOT NULL,
     data_geracao	DATE,
     data_pagamento	DATE,
-    valor_pago		FLOAT,
+    valor_pago		DOUBLE(37,2),
     data_vencimento	DATE,
     pago			BOOLEAN,
-    juros			INT		-- FK
+    juros			INTEGER,
+    FOREIGN KEY(cod_pagamento) REFERENCES PAGAMENTO(codigo),
+    FOREIGN KEY(juros) REFERENCES JURO(codigo),
+    CONSTRAINT pk_parcela PRIMARY KEY(sequencial, cod_pagamento)
 );
