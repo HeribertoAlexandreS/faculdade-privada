@@ -207,8 +207,7 @@ CREATE TABLE IF NOT EXISTS OFERTA (
     FOREIGN KEY(codigo_disciplina) REFERENCES DISCIPLINA(codigo),
     FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id),
     FOREIGN KEY(cpf_professor) REFERENCES PROFESSOR(cpf_usuario),
-    CONSTRAINT pk_oferta PRIMARY KEY(codigo_disciplina, sequencial),
-    UNIQUE INDEX (sequencial)
+    CONSTRAINT pk_oferta PRIMARY KEY(codigo_disciplina, sequencial)
 );
 
 CREATE TABLE IF NOT EXISTS DIA (
@@ -236,14 +235,15 @@ CREATE TABLE IF NOT EXISTS HORARIO_OFERTA (
 
 CREATE TABLE IF NOT EXISTS ALUNO_OFERTA (
 	cpf_aluno			VARCHAR(11),
+    cod_disciplina		INTEGER,
     sequencial_oferta	INT,
     frequencia			INT,
-    nota_1				DOUBLE(2, 2),
-    nota_2				DOUBLE(2, 2),
-	final				DOUBLE(2, 2),
+    nota_1				DOUBLE(4, 2),
+    nota_2				DOUBLE(4, 2),
+	final				DOUBLE(4, 2),
     FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
-    FOREIGN KEY(sequencial_oferta) REFERENCES OFERTA(sequencial),
-    CONSTRAINT pk_aluno_oferta PRIMARY KEY(cpf_aluno, sequencial_oferta)
+    FOREIGN KEY(cod_disciplina, sequencial_oferta) REFERENCES OFERTA(codigo_disciplina, sequencial),
+    CONSTRAINT pk_aluno_oferta PRIMARY KEY(cpf_aluno, sequencial_oferta, cod_disciplina)
 );
 
 CREATE TABLE IF NOT EXISTS BIBLIOTECA (
@@ -320,12 +320,11 @@ CREATE TABLE IF NOT EXISTS RESERVA (
     FOREIGN KEY(numero_sala) REFERENCES SALA_BIBLIOTECA(numero),
     CONSTRAINT pk_reserva PRIMARY KEY(cpf_usuario, numero_sala, data_reserva)
 );
-
 CREATE TABLE IF NOT EXISTS EMPRESTIMO (
 	codigo_livro		INTEGER NOT NULL,
     sequencial			INT NOT NULL,
-    cpf_usuario			VARCHAR(11) NOT NULL UNIQUE,
-    cod_tipo			INTEGER NOT NULL UNIQUE,
+    cpf_usuario			VARCHAR(11) NOT NULL,
+    cod_tipo			INTEGER NOT NULL,
     data_emprestimo		DATE,
     data_devolucao		DATE,
     valor_total_multa	DOUBLE(37,2),
@@ -383,7 +382,7 @@ CREATE TABLE IF NOT EXISTS PROVA (
 CREATE TABLE IF NOT EXISTS CANDIDATO_REALIZA_PROVA (
 	cpf_candidato	VARCHAR(11) NOT NULL,
     codigo_prova	INTEGER NOT NULL,
-    nota			DOUBLE(2,2),
+    nota			DOUBLE(4,2),
     situacao		BOOLEAN,
     FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf),
     FOREIGN KEY(codigo_prova) REFERENCES PROVA(codigo),

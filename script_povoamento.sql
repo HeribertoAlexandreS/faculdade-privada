@@ -140,6 +140,21 @@ VALUES ('72846394721', 'tavares', 'senha11', 'tavares@hotmail.com',
 -- ALUNO
 INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
 		data_inic)
+VALUES ('08723738430', '2749274937', '2017-01-05', '2017', '2017-05-18');
+INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
+		data_inic)
+VALUES ('71907636005', '6427274963', '2017-01-05', '2017', '2017-05-18');
+INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
+		data_inic)
+VALUES ('76123754009', '32939375963', '2016-06-05', '2016', '2016-08-18');
+INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
+		data_inic)
+VALUES ('89318239084', '27339385963', '2016-06-05', '2016', '2016-08-18');
+INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
+		data_inic)
+VALUES ('08792462006', '48265385963', '2016-01-05', '2016', '2016-02-18');
+INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
+		data_inic)
 VALUES	('08723738430', '2749274937', '2017-01-05', '2017', '2017-05-18'),
 		('71907636005', '6427274963', '2017-01-05', '2017', '2017-05-18'),
         ('76123754009', '32939375963', '2016-06-05', '2016', '2016-08-18'),
@@ -251,6 +266,8 @@ VALUES ('Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme,
 
 -- PRE REQUISITO
 INSERT INTO PRE_REQUISITO
+VALUES (7, 1);
+INSERT INTO PRE_REQUISITO
 VALUES	(1, 2),
 		(2, 3),
         (3, 2),
@@ -289,43 +306,167 @@ INSERT INTO HORARIO_OFERTA
 VALUES (1, 1, '08:00', '10:00', 1);
 INSERT INTO HORARIO_OFERTA
 VALUES (6, 4, '18:00', '20:00', 2);
+INSERT INTO HORARIO_OFERTA
+VALUES (6, 4, '18:00', '20:00', 2);
 
 -- ALUNO_OFERTA
-INSERT INTO ALUNO_OFERTA (cpf_aluno, sequencial_oferta, frequencia,
+INSERT INTO ALUNO_OFERTA (cpf_aluno, cod_disciplina, sequencial_oferta, frequencia,
 							nota_1, nota_2, final)
-VALUES	('08723738430', 1, 0.87, 8, 8),
-		('71907636005', 2, 0.79, 5, 3, 6),
-        ('76123754009', 3, 0.94, 7, 9),
-        ('08723738430', 4, 0.50, 5, 1, 4),
-        ('71907636005', 1, 0.83, 6, 7, 8);
+VALUES	('08723738430', 2, 1, 14, 8, 8, 5),
+		('71907636005', 1, 1, 21, 5, 3, 6),
+        ('76123754009', 7, 2, 30, 7, 9, 4),
+        ('08723738430', 6, 4, 22, 5, 1, 4),
+        ('71907636005', 7, 2, 23, 6, 7, 8);
 
 -- BIBLIOTECA
-INSERT INTO BIBLIOTECA (codigo, faculdade, nome, data_criacao)
-VALUES	('91697364000128', 'Biblioteca de Ciências Sociais Aplicadas', 1994-05-12),
-		('91697364000128', 'Biblioteca de Matemática Estatística e Informática', 2005-09-27),
-        ('43198423000170', 'Biblioteca George Alexander', 1927-02-01),
-        ('05280452000198', 'Biblioteca', 2015-05-24),
-        ('94500853000136', 'Biblioteca de Engenharia Civil', 1997-07-09);
+INSERT INTO BIBLIOTECA (faculdade, nome, data_criacao)
+VALUES	('91697364000128', 'Biblioteca de Ciências Sociais Aplicadas', '1994-05-12'),
+		('91697364000128', 'Biblioteca de Matemática Estatística e Informática', '2005-09-27'),
+        ('43198423000170', 'Biblioteca George Alexander', '1927-02-01'),
+        ('05280452000198', 'Biblioteca', '2015-05-24'),
+        ('94500853000136', 'Biblioteca de Engenharia Civil', '1997-07-09');
 
 -- TIPO_EMPRESTIMO
-INSERT INTO TIPO_EMPRESTIMO (codigo, descricao, valor_multa_diaria)
+INSERT INTO TIPO_EMPRESTIMO (descricao, valor_multa_diaria)
 VALUES	('Empréstimo para estudantes de Graduação', 1.5),
 		('Empréstimo para estudantes de Pós-Graduação', 3.0);
 
 -- SALA_BIBLIOTECA
-INSERT INTO SALA_BIBLIOTECA (numero, descricao, estado, codigo_biblioteca, tipo)
+INSERT INTO SALA_BIBLIOTECA (descricao, estado, codigo_biblioteca, tipo)
 VALUES	('Sala com ar-condicionado e sem quadro branco', 'LIVRE', 1, 'ESTUDO'),
 		('Sala sem ar-condicionado e com quadro branco', 'OCUPADA', 1, 'ESTUDO'),
 		('Sala com ar-condicionado e com quadro branco', 'LIVRE', 2, 'ESTUDO'),
 		('Sala com caixa de som e um datashow', 'RESERVADA', 4, 'EVENTO'),
         ('Sala com ar-condicionado e sem quadro branco', 'LIVRE', 1, 'ESTUDO');
 
-INSERT INTO LIVRO (codigo, titulo, genero, isbn, ano_publicacao,
+INSERT INTO LIVRO (titulo, genero, isbn, ano_publicacao,
 					editora, edicao, autor, numero_exemplares,
 					codigo_area, codigo_biblioteca)
 VALUES	('Cartas de um diabo a seu aprendiz', 'antropologia, filosofia e teologia', '9788578271114', 2009, 'Thomas Nelson Brasil', 2, 'CS Lewis', 10, 6, 1),
-		('The Cronicles of Narnia', 'aventura', '9780066238500', 2016, 'HarperCollins', 1, 'CS Lewis', 20, 1),
+		('The Cronicles of Narnia', 'aventura', '9780066238500', 2016, 'HarperCollins', 1, 'CS Lewis', 20, 6, 1),
         ('Cálculo - Volume 1', 'Ciências', '8522112584', 2013, 'Cengage', 7, 'James Stewart', 24, 1, 2),
         ('Cálculo - Volume 2', 'Ciências', '8522112592', 2013, 'Cengage', 7, 'James Stewart', 12, 1, 2),
         ('Álgebra Linear com Aplicações', 'Ciências', '8540701693', 2012, 'Bookman', 10, 'H. Anton, C. Rorres', 15, 1, 2);
+
+-- PRATELEIRA
+INSERT INTO PRATELEIRA (nivel, descricao)
+VALUES (1, "Álgebra Linear");
+INSERT INTO PRATELEIRA (nivel, descricao)
+VALUES (3, "Metodologia Científica");
+INSERT INTO PRATELEIRA (nivel, descricao)
+VALUES (2, "Use a cabeça! Java");
+INSERT INTO PRATELEIRA (nivel, descricao)
+VALUES (4, "Cálculo I");
+INSERT INTO PRATELEIRA (nivel, descricao)
+VALUES (1, "Constituição do Brasil");
+
+-- EXEMPLAR
+INSERT INTO EXEMPLAR
+VALUES (7, 1, 0, 2);
+INSERT INTO EXEMPLAR
+VALUES (11, 1, 1, 1);
+INSERT INTO EXEMPLAR
+VALUES (8, 1, 0, 6);
+INSERT INTO EXEMPLAR
+VALUES (9, 1, 0, 3);
+INSERT INTO EXEMPLAR
+VALUES (10, 1, 1, 3);
+
+-- RESERVA
+INSERT INTO RESERVA
+VALUES 	('08723738430', 1, '2018-12-13', '19:00', '20:00'),
+		('08792462006', 2, '2018-12-14', '19:00', '20:00'),
+        ('52891896025', 2, '2018-12-14', '15:00', '16:00'),
+        ('69835863016', 3, '2018-12-15', '14:00', '15:00'),
+        ('69835863016', 1, '2018-12-16', '17:00', '18:00');
+
+-- EMPRESTIMO
+INSERT INTO EMPRESTIMO
+VALUES 	(8, 1, '08723738430', 1, '2018-12-13', '2018-12-18', 0, 0, 0),
+		(8, 1, '08792462006', 2, '2018-02-15', '2018-02-20', 0, 0, 0),
+        (9, 1, '52891896025', 1, '2018-12-15', '2018-12-20', 15.5, 1, 0),
+        (10, 1,'53809508098', 2, '2018-12-07', '2018-12-12', 6, 0, 1),
+        (11, 1,'69835863016', 2, '2018-12-10', '2018-12-15', 3, 1, 0);
+
+-- CANDIDATO
+INSERT INTO CANDIDATO
+VALUES 	('08723738430'),
+		('08792462006'),
+        ('71907636005'),
+        ('76123754009'),
+        ('89318239084');
+
+-- INSCRICAO
+INSERT INTO INSCRICAO
+VALUES 	(2, '08723738430', 90, '2018-10-15', 1, '2018-10-10'),
+		(3, '08792462006', 90, '2018-09-15', 1, '2018-09-12'),
+        (4, '71907636005', 90, '2018-09-20', 0, '2018-09-17'),
+        (5, '76123754009', 90, '2018-10-13', 1, '2018-10-10'),
+        (6, '89318239084', 90, '2018-10-05', 1, '2018-10-01');
+
+SELECT * FROM prova;
+-- LOCAL_PROVA
+INSERT INTO LOCAL_PROVA (capacidade, numero, descricao, referencia, tipo, cep_endereco)
+VALUES 	(30, 201, "Sala do 5 andar", "Perto da padaria Viver", "Prova da Fase 1", '01302000'),
+		(20, 406, "Sala do 4 andar", "Perto da padaria Viver", "Prova da Fase 1", '01302000'),
+        (50, 311, "Sala do 3 andar", "Perto do Hospital Restauração", "Prova da Fase 2", '51021140'),
+        (40, 384, "Sala do 3 andar", "Perto do Hospital Restauração", "Prova da Fase 2", '51021140'),
+        (30, 472, "Sala do 4 andar", "Perto do Hospital Restauração", "Prova da Fase 2", '51021140');
         
+-- PROVA
+INSERT INTO PROVA (materia, data_realizacao, codigo_area, codigo_local)
+VALUES 	("Matemática", '2018-12-23', 1, 1),
+		("Português", '2019-01-10', 6, 2),
+        ("História", '2019-02-05', 4, 3),
+        ("Física", '2019-01-20', 3, 4),
+        ("Lógica de Programação", '2019-02-10', 2, 5);
+
+-- CANDIDATO_REALIZA_PROVA
+INSERT INTO CANDIDATO_REALIZA_PROVA
+VALUES 	('08723738430', 3, 10, 1),
+		('08792462006', 1, 9.5, 1),
+        ('71907636005', 2, 7, 1),
+        ('76123754009', 4, 8, 1),
+        ('89318239084', 5, 0, 0);
+
+-- PAGAMENTO
+INSERT INTO PAGAMENTO (foi_pago, data_geracao, desconto, valor_desconto, valor_total_final)
+VALUES 	(1, '2018-12-06', 0, 0, 2000.00),
+		(0, '2018-12-13', 30, 900.00, 1000.00),
+        (0, '2018-12-13', 0, 0, 1200.00),
+        (1, '2018-10-05', 0, 0 , 900.00),
+        (1, '2018-09-10', 0, 0, 1100.00);
+
+-- MENSALIDADE
+INSERT INTO MENSALIDADE (valor, data_emissao, data_vencimento, situacao, codigo_aluno, codigo_pagamento)
+VALUES 	(2000.00, '2018-12-05', '2018-12-10', 1, '71907636005', 1),
+		(1000.00, '2018-12-10', '2018-12-15', 1, '08723738430', 2),
+        (1200.00, '2018-12-10', '2018-12-15', 1, '08792462006', 3),
+        (900.00, '2018-10-05', '2018-10-10', 1, '76123754009', 4),
+        (1100.00, '2018-09-05', '2018-09-10', 1, '89318239084', 5);
+
+-- FUNCIONARIO
+INSERT INTO FUNCIONARIO
+VALUES 	('16641283011', "Maria", "6335878484", "140535998", 'F', 34, '1984-01-22', 2500.00, 1, 40, "Ensino Superior", 'SECRETARIO', 
+			"Organizar os eventos", 'INTEGRAL', '09:00', '18:00', '20010020'),
+		('43187128009', "Antonio", "3839628413", "325723023", 'M', 52, '1966-11-05', 3000.00, 1, 40, "Pós-graduação", 'SECRETARIO', 
+			"Organizar as escalas dos funcionários", 'INTEGRAL', '08:00', '17:00', '22640100'),
+        ('59113823000', "José", "9635288513", "501664968", 'M', 45, '1973-01-19', 1500.00, 0, 20, "Ensino Médio", 'FAXINEIRO', 
+			"Limpar os prédios", 'VESPERTINO', '16:00', '20:00', '51130130'),
+        ('10692353003', "Camila", "3138208032", "308448352", 'F', 27, '1991-10-08', 2000.00, 0, 40, "Ensino Médio", 'SEGURANCA', 
+			"Vigia noturno", 'NOTURNO', '16:00', '01:00', '51030030'),
+        ('57145028093', "Jessamine", "8639442287", "357877275", 'F', 29, '1989-08-23', 2500.00, 0, 40, "Ensino Superior", 
+			'FISCAL DE PROVA', "Fiscal de prova de seleção", 'MATUTINO', '06:00', '15:00', '02402020');
+            
+-- DEPENDENTE
+INSERT INTO DEPENDENTE
+VALUES 	('43187128009', 1, 'CONJUGE', "Ana"),
+		('16641283011', 1, 'FILHO', "Matheus"),
+        ('43187128009', 2, 'FILHO', "Felipe"),
+        ('57145028093', 1, 'MAE', "Claudia"),
+        ('10692353003', 1, 'PAI', "Otavio");
+        
+-- JURO
+INSERT INTO JURO (taxa, tipo, descricao)
+VALUES 	(3.5, 'SIMPLES', "Multa de atraso da mensalidade de graduação"),
+		(5, 'SIMPLES', "Multa de atraso da mensalidade de pós-graduação");
