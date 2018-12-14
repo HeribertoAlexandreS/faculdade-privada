@@ -470,3 +470,23 @@ VALUES 	('43187128009', 1, 'CONJUGE', "Ana"),
 INSERT INTO JURO (taxa, tipo, descricao)
 VALUES 	(3.5, 'SIMPLES', "Multa de atraso da mensalidade de graduação"),
 		(5, 'SIMPLES', "Multa de atraso da mensalidade de pós-graduação");
+
+-- TO DO PROJETO
+
+-- TO DO DOCUMENTO
+
+-- TO DO PROJETO_TEM_ALUNO
+
+-- TO DO BENEFICIO
+
+-- TO DO TRABALHO_ACADEMICO
+
+-- TO DO BANCA_EXAMINADORA
+
+-- PARCELA
+INSERT INTO PARCELA (cod_pagamento, data_geracao, data_pagamento, valor_pago, data_vencimento, pago, juros)
+VALUES 	(1, '2018-12-06', '2018-12-06', 1000.00, '2018-12-10', 1, 2),
+		(1, '2018-12-06', '2018-12-08', 1000.00, '2018-12-10', 1, 2),
+        (3, '2018-12-13', '2018-12-13', 1200.00, '2018-12-15', 0, 2),
+        (4, '2018-10-05', '2018-10-05', 900.00, '2018-10-10', 1, 1),
+        (5, '2018-09-10', '2018-09-10', 1100.00, '2018-09-15', 1, 1);
