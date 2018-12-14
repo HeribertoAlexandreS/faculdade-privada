@@ -67,6 +67,10 @@ INSERT INTO AREA_CONHECIMENTO (descricao)
 VALUES ('Direito');
 INSERT INTO AREA_CONHECIMENTO (descricao)
 VALUES ('Antropologia');
+INSERT INTO AREA_CONHECIMENTO (descricao)
+VALUES ('Administração');
+INSERT INTO AREA_CONHECIMENTO (descricao)
+VALUES ('Saúde');
 
 -- SUBAREA_CONHECIMENTO
 INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
@@ -81,6 +85,10 @@ INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
 VALUES ('Direito Penal', 5);
 INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
 VALUES ('Antropologia Social e Filosófica', 6);
+INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
+VALUES ('Fomento de Educação', 7);
+INSERT INTO SUBAREA_CONHECIMENTO (descricao, codigo_area)
+VALUES ('Autismo e Educação', 8);
 
 -- FACULDADE
 INSERT INTO FACULDADE
@@ -154,12 +162,7 @@ INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrad
 		data_inic)
 VALUES ('08792462006', '48265385963', '2016-01-05', '2016', '2016-02-18');
 INSERT INTO ALUNO (cpf_usuario, numero_matricula, data_matricula, ano_sem_entrada, 
-		data_inic)
-VALUES	('08723738430', '2749274937', '2017-01-05', '2017', '2017-05-18'),
-		('71907636005', '6427274963', '2017-01-05', '2017', '2017-05-18'),
-        ('76123754009', '32939375963', '2016-06-05', '2016', '2016-08-18'),
-        ('89318239084', '27339385963', '2016-06-05', '2016', '2016-08-18'),
-        ('08792462006', '48265385963', '2016-01-05', '2016', '2016-02-18');
+		data_inic);
 
 -- DEPARTAMENTO
 INSERT INTO DEPARTAMENTO (nome, telefone, email, sigla, cnpj_faculdade)
@@ -266,8 +269,6 @@ VALUES ('Mecânica I', 'Estudo matemático dos movimentos', 'Movimento uniforme,
 
 -- PRE REQUISITO
 INSERT INTO PRE_REQUISITO
-VALUES (7, 1);
-INSERT INTO PRE_REQUISITO
 VALUES	(1, 2),
 		(2, 3),
         (3, 2),
@@ -277,11 +278,11 @@ VALUES	(1, 2),
 
 -- OFERTA
 INSERT INTO OFERTA
-VALUES (7, 3, 2018, 40, '2', 3, '52891896025');
+VALUES (5, 3, 2018, 40, '2', 3, '52891896025');
 INSERT INTO OFERTA
-VALUES (7, 2, 2018, 40, '1', 3, '52891896025');
+VALUES (5, 2, 2018, 40, '1', 3, '52891896025');
 INSERT INTO OFERTA
-VALUES (6, 4, 2016, 20, '1', 5, '85875388021');
+VALUES (4, 4, 2016, 20, '1', 5, '85875388021');
 INSERT INTO OFERTA
 VALUES (2, 1, 2015, 40, '2', 6, '71817266098');
 INSERT INTO OFERTA
@@ -299,15 +300,15 @@ VALUES ('Quinta');
 INSERT INTO HORARIO_OFERTA
 VALUES (2, 1, '14:00', '16:00', 1);
 INSERT INTO HORARIO_OFERTA
-VALUES (7, 3, '16:00', '18:00', 3);
+VALUES (5, 3, '16:00', '18:00', 3);
 INSERT INTO HORARIO_OFERTA
-VALUES (7, 2, '10:00', '12:00', 2);
+VALUES (5, 2, '10:00', '12:00', 2);
 INSERT INTO HORARIO_OFERTA
 VALUES (1, 1, '08:00', '10:00', 1);
 INSERT INTO HORARIO_OFERTA
-VALUES (6, 4, '18:00', '20:00', 2);
+VALUES (4, 4, '18:00', '20:00', 2);
 INSERT INTO HORARIO_OFERTA
-VALUES (6, 4, '18:00', '20:00', 2);
+VALUES (4, 2, '18:00', '20:00', 2);
 
 -- ALUNO_OFERTA
 INSERT INTO ALUNO_OFERTA (cpf_aluno, cod_disciplina, sequencial_oferta, frequencia,
@@ -471,7 +472,14 @@ INSERT INTO JURO (taxa, tipo, descricao)
 VALUES 	(3.5, 'SIMPLES', "Multa de atraso da mensalidade de graduação"),
 		(5, 'SIMPLES', "Multa de atraso da mensalidade de pós-graduação");
 
--- TO DO PROJETO
+-- PROJETO
+INSERT INTO PROJETO (titulo, tema, tipo, situacao, data_inicio, data_fim,
+						resumo, area, subarea, orientado_por, coorientado_por)
+VALUES	('Programa Livro Texto', 'Produção de Livro-Texto em formato digital', 'TEMPO INDETERMINADO', TRUE, 2018-10-15, NULL, 'Formação de uma biblioteca digital básica disponível ao estudante de graduação, preferencialmente, publicando livros de várias áreas do conhecimento, resultantes de textos produzidos por docentes da UFPE.', 6, 7, NULL, NULL),
+		('Curso de Residência em Software', 'Programa de residência em software', 'PROGRAMA', TRUE, 2000-05-16, NULL, 'O programa tem como objetivo principal incentivar a formação de recursos humanos com alto grau de especialização em testes de software embarcado e aplicações em computação móvel, com os incentivos e benefícios previstos na Lei de Informática. O foco de atuação desta turma será o planejamento, projeto, automação e execução de diversos tipos de testes, realizados em aplicações para celulares.', 2, 2, NULL, NULL),
+        ('Transtorno do Espectro do Autismo e Educação', 'Transtorno do Espectro do Autismo e Educação', 'PROJETO DE PESQUISA', TRUE, 2005-04-29, 'Políticas Públicas e Educação Especial: diagnóstico da realidade do atendimento educacional às Crianças e propostas de Intervenção.', 8, 8, NULL, NULL),
+        ('PEG', 'Engenharia de Software', 'PROJETO DE PESQUISA', FALSE, 2013-09-16, 2017-12-01, 'Projeto de Análise em termos de engenharia de software', 8, 8, '52891896025', NULL),
+        ('Viajando na maio naise', 'PROJETO SOCIAL', TRUE, 2017-05-30, NULL, 'Projeto do impacto social da ociosidade dos moradores de uma comunidade de baixa renda', 6, 6, '52891896025', '72846394721');
 
 -- TO DO DOCUMENTO
 
