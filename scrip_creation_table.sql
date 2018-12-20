@@ -9,6 +9,7 @@ USE faculdade_privada;
 
 -- MER_Faculdade_Privada_1_Final
 
+-- TODO colocar Trigger para remocao de ENDERECO quando nao houver mais conexao com nenhum usuario
 CREATE TABLE IF NOT EXISTS ENDERECO (
 	cep			VARCHAR(8) NOT NULL,
     cidade		VARCHAR(30),
@@ -37,7 +38,8 @@ CREATE TABLE IF NOT EXISTS SUBAREA_CONHECIMENTO (
     descricao	TEXT,
     codigo_area	INTEGER,
     PRIMARY KEY(codigo),
-    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo) 
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS FACULDADE (
@@ -51,6 +53,7 @@ CREATE TABLE IF NOT EXISTS FACULDADE (
     num_end				VARCHAR(5),
     PRIMARY KEY(cnpj),
     FOREIGN KEY(cep) REFERENCES ENDERECO(cep)
+			ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS CALENDARIO_ACADEMICO (
@@ -67,6 +70,7 @@ CREATE TABLE IF NOT EXISTS CALENDARIO_ACADEMICO (
     PRIMARY KEY(data_ref),
     FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id),
     FOREIGN KEY(cnpj_faculdade) REFERENCES FACULDADE(cnpj)
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS USUARIO (
@@ -85,6 +89,7 @@ CREATE TABLE IF NOT EXISTS USUARIO (
     num_end			VARCHAR(5),
     PRIMARY KEY(cpf),
     FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
+			ON UPDATE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS ALUNO (
@@ -100,6 +105,7 @@ CREATE TABLE IF NOT EXISTS ALUNO (
     situacao			VARCHAR(50),
     PRIMARY KEY(cpf_usuario),
     FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf)
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS DEPARTAMENTO (
@@ -113,6 +119,7 @@ CREATE TABLE IF NOT EXISTS DEPARTAMENTO (
     data_fim_professor		DATE,
     PRIMARY KEY(codigo),
     FOREIGN KEY(cnpj_faculdade) REFERENCES FACULDADE(cnpj)
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS PROFESSOR (
@@ -127,9 +134,12 @@ CREATE TABLE IF NOT EXISTS PROFESSOR (
     cod_dept			INTEGER,
     e_diretor			BOOLEAN,
     PRIMARY KEY(cpf_usuario),
-    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
-    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(cod_dept) REFERENCES DEPARTAMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS CURSO (
@@ -149,8 +159,10 @@ CREATE TABLE IF NOT EXISTS CURSO (
     data_inicio_coordenacao	DATE,
     data_fim_coordenacao	DATE,
     PRIMARY KEY(codigo),
-    FOREIGN KEY(codigo_departamento) REFERENCES DEPARTAMENTO(codigo),
+    FOREIGN KEY(codigo_departamento) REFERENCES DEPARTAMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(professor_coordenador) REFERENCES PROFESSOR(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS TRILHA (
@@ -159,6 +171,7 @@ CREATE TABLE IF NOT EXISTS TRILHA (
     codigo_area		INTEGER,
     PRIMARY KEY(id),
     FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS DISCIPLINA (
@@ -176,23 +189,29 @@ CREATE TABLE IF NOT EXISTS DISCIPLINA (
     cod_trilha			INTEGER,
     cod_curso			INTEGER,
     PRIMARY KEY(codigo),
-    FOREIGN KEY(cod_trilha) REFERENCES TRILHA(id),
+    FOREIGN KEY(cod_trilha) REFERENCES TRILHA(id)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(cod_curso) REFERENCES CURSO(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS PRE_REQUISITO (
 	disciplina_principal		INTEGER NOT NULL,
 	disciplina_pre_requisito	INTEGER NOT NULL,
-    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo),
-    FOREIGN KEY(disciplina_pre_requisito) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(disciplina_pre_requisito) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT pk_pre_requisito PRIMARY KEY(disciplina_principal, disciplina_pre_requisito)
 );
 
 CREATE TABLE IF NOT EXISTS CO_REQUISITO (
 	disciplina_principal		INTEGER NOT NULL,
 	disciplina_co_requisito		INTEGER NOT NULL,
-    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo),
-    FOREIGN KEY(disciplina_co_requisito) REFERENCES DISCIPLINA(codigo),
+    FOREIGN KEY(disciplina_principal) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(disciplina_co_requisito) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT pk_co_requisito PRIMARY KEY(disciplina_principal, disciplina_co_requisito)
 );
 
@@ -203,10 +222,13 @@ CREATE TABLE IF NOT EXISTS OFERTA (
     vagas				INT,
     semestre			ENUM('1', '2'),
     local_id			INTEGER,
-    cpf_professor		VARCHAR(11),
-    FOREIGN KEY(codigo_disciplina) REFERENCES DISCIPLINA(codigo),
-    FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id),
-    FOREIGN KEY(cpf_professor) REFERENCES PROFESSOR(cpf_usuario),
+    cpf_professor		VARCHAR(11) NULL,	-- Modificado de NOT NULL para NULL
+    FOREIGN KEY(codigo_disciplina) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(local_id) REFERENCES LOCALIZACAO(id)
+			ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY(cpf_professor) REFERENCES PROFESSOR(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT pk_oferta PRIMARY KEY(codigo_disciplina, sequencial)
 );
 
@@ -228,8 +250,10 @@ CREATE TABLE IF NOT EXISTS HORARIO_OFERTA (
     hr_inicio		TIME NOT NULL,
     hr_fim			TIME,
     dia				INTEGER,
-    FOREIGN KEY(cod_disciplina) REFERENCES DISCIPLINA(codigo),
-    FOREIGN KEY(dia) REFERENCES DIA(codigo),
+    FOREIGN KEY(cod_disciplina) REFERENCES DISCIPLINA(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(dia) REFERENCES DIA(codigo)
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT pk_horario_oferta PRIMARY KEY(cod_disciplina, sequencial, hr_inicio)
 );
 
@@ -241,8 +265,10 @@ CREATE TABLE IF NOT EXISTS ALUNO_OFERTA (
     nota_1				DOUBLE(4, 2),
     nota_2				DOUBLE(4, 2),
 	final				DOUBLE(4, 2),
-    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
-    FOREIGN KEY(cod_disciplina, sequencial_oferta) REFERENCES OFERTA(codigo_disciplina, sequencial),
+    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(cod_disciplina, sequencial_oferta) REFERENCES OFERTA(codigo_disciplina, sequencial)
+			ON UPDATE CASCADE ON DELETE CASCADE,	-- ON DELETE SET NULL pois possa ser que seja necessario manter registro de matriculas embora alguma oferta de disciplina seja removida
     CONSTRAINT pk_aluno_oferta PRIMARY KEY(cpf_aluno, sequencial_oferta, cod_disciplina)
 );
 
@@ -253,6 +279,7 @@ CREATE TABLE IF NOT EXISTS BIBLIOTECA (
     data_criacao	DATE,
     PRIMARY KEY(codigo),
     FOREIGN KEY(faculdade) REFERENCES FACULDADE(cnpj)
+			ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS TIPO_EMPRESTIMO (
@@ -263,7 +290,7 @@ CREATE TABLE IF NOT EXISTS TIPO_EMPRESTIMO (
 );
 
 CREATE TABLE IF NOT EXISTS SALA_BIBLIOTECA (
-	numero				INTEGER NOT NULL AUTO_INCREMENT,			-- PK
+	numero				INTEGER NOT NULL AUTO_INCREMENT,
     descricao			TEXT,
     estado				ENUM(	'LIVRE',
 								'OCUPADA',
@@ -274,6 +301,7 @@ CREATE TABLE IF NOT EXISTS SALA_BIBLIOTECA (
 								'ESTUDO'),
     PRIMARY KEY(numero),
     FOREIGN KEY(codigo_biblioteca) REFERENCES BIBLIOTECA(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS LIVRO (
@@ -286,11 +314,13 @@ CREATE TABLE IF NOT EXISTS LIVRO (
     edicao				INT,
     autor				VARCHAR(80),
     numero_exemplares	INT,
-    codigo_area			INTEGER,		-- FK
+    codigo_area			INTEGER,
     codigo_biblioteca	INTEGER,
     PRIMARY KEY(codigo),
-    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY(codigo_biblioteca) REFERENCES BIBLIOTECA(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL 
 );
 
 CREATE TABLE IF NOT EXISTS PRATELEIRA (
@@ -305,8 +335,10 @@ CREATE TABLE IF NOT EXISTS EXEMPLAR (
     sequencial			INT NOT NULL,
     esta_emprestado		BOOLEAN,
     codigo_prateleira	INTEGER,
-    FOREIGN KEY(codigo_livro) REFERENCES LIVRO(codigo),
-    FOREIGN KEY(codigo_prateleira) REFERENCES PRATELEIRA(codigo),
+    FOREIGN KEY(codigo_livro) REFERENCES LIVRO(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(codigo_prateleira) REFERENCES PRATELEIRA(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT pk_exemplar PRIMARY KEY(codigo_livro, sequencial)
 );
 
@@ -316,10 +348,13 @@ CREATE TABLE IF NOT EXISTS RESERVA (
     data_reserva		DATE NOT NULL,
     hora_inicio			TIME,
     hora_fim			TIME,
-    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
-    FOREIGN KEY(numero_sala) REFERENCES SALA_BIBLIOTECA(numero),
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY(numero_sala) REFERENCES SALA_BIBLIOTECA(numero)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT pk_reserva PRIMARY KEY(cpf_usuario, numero_sala, data_reserva)
 );
+
 CREATE TABLE IF NOT EXISTS EMPRESTIMO (
 	codigo_livro		INTEGER NOT NULL,
     sequencial			INT NOT NULL,
@@ -330,9 +365,12 @@ CREATE TABLE IF NOT EXISTS EMPRESTIMO (
     valor_total_multa	DOUBLE(37,2),
     foi_pago			BOOLEAN,
     esta_atrasado		BOOLEAN,
-    FOREIGN KEY(codigo_livro, sequencial) REFERENCES EXEMPLAR(codigo_livro, sequencial),
-    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf),
-    FOREIGN KEY(cod_tipo) REFERENCES TIPO_EMPRESTIMO(codigo),
+    FOREIGN KEY(codigo_livro, sequencial) REFERENCES EXEMPLAR(codigo_livro, sequencial)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY(cpf_usuario) REFERENCES USUARIO(cpf)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY(cod_tipo) REFERENCES TIPO_EMPRESTIMO(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT pk_emprestimo PRIMARY KEY(codigo_livro, sequencial, cpf_usuario, cod_tipo)
 );
 
@@ -340,7 +378,8 @@ CREATE TABLE IF NOT EXISTS EMPRESTIMO (
 
 CREATE TABLE IF NOT EXISTS CANDIDATO (
 	cpf		VARCHAR(11) NOT NULL,
-	FOREIGN KEY(cpf) REFERENCES USUARIO(cpf),
+	FOREIGN KEY(cpf) REFERENCES USUARIO(cpf)
+			ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(cpf)
 );
 
@@ -351,8 +390,10 @@ CREATE TABLE IF NOT EXISTS INSCRICAO (
     data_pagamento		DATE,
     situacao			BOOLEAN,
     data_inscricao		DATE,
-    FOREIGN KEY(codigo_curso) REFERENCES CURSO(codigo),
-    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf),
+    FOREIGN KEY(codigo_curso) REFERENCES CURSO(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
+    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT pk_inscricao PRIMARY KEY(codigo_curso, cpf_candidato)
 );
 
@@ -363,9 +404,10 @@ CREATE TABLE IF NOT EXISTS LOCAL_PROVA (
     descricao		TEXT,
     referencia		TEXT,
     tipo			VARCHAR(50),
-    cep_endereco	VARCHAR(8) NOT NULL,
+    cep_endereco	VARCHAR(8) NULL,
     PRIMARY KEY(codigo),
     FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS PROVA (
@@ -375,8 +417,10 @@ CREATE TABLE IF NOT EXISTS PROVA (
     codigo_area		INTEGER,
     codigo_local	INTEGER,
     PRIMARY KEY(codigo),
-    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(codigo_area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY(codigo_local) REFERENCES LOCAL_PROVA(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS CANDIDATO_REALIZA_PROVA (
@@ -384,8 +428,10 @@ CREATE TABLE IF NOT EXISTS CANDIDATO_REALIZA_PROVA (
     codigo_prova	INTEGER NOT NULL,
     nota			DOUBLE(4,2),
     situacao		BOOLEAN,
-    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf),
-    FOREIGN KEY(codigo_prova) REFERENCES PROVA(codigo),
+    FOREIGN KEY(cpf_candidato) REFERENCES CANDIDATO(cpf)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(codigo_prova) REFERENCES PROVA(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT pk_candidato_realiza_prova PRIMARY KEY(cpf_candidato, codigo_prova)
 );
 
@@ -408,8 +454,10 @@ CREATE TABLE IF NOT EXISTS MENSALIDADE (
     codigo_aluno		VARCHAR(11),
     codigo_pagamento	INTEGER UNIQUE,
     PRIMARY KEY(sequencial),
-    FOREIGN KEY(codigo_aluno) REFERENCES ALUNO(cpf_usuario),
+    FOREIGN KEY(codigo_aluno) REFERENCES ALUNO(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(codigo_pagamento) REFERENCES PAGAMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS FUNCIONARIO (
@@ -438,6 +486,7 @@ CREATE TABLE IF NOT EXISTS FUNCIONARIO (
     cep_endereco	VARCHAR(8) NOT NULL,
     PRIMARY KEY(cpf),
     FOREIGN KEY(cep_endereco) REFERENCES ENDERECO(cep)
+			ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS DEPENDENTE (
@@ -450,7 +499,8 @@ CREATE TABLE IF NOT EXISTS DEPENDENTE (
                                 'FILHO',
                                 'OUTRO'),
 	nome				VARCHAR(80),
-    FOREIGN KEY(cpf_funcionario) REFERENCES FUNCIONARIO(cpf),
+    FOREIGN KEY(cpf_funcionario) REFERENCES FUNCIONARIO(cpf)
+			ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT pk_dependente PRIMARY KEY(cpf_funcionario, sequencial)
 );
 
@@ -471,15 +521,19 @@ CREATE TABLE IF NOT EXISTS PROJETO (
     data_inicio		DATE,
     data_fim		DATE,
     resumo			TEXT,
-    area			INTEGER NOT NULL,	-- FK
-    subarea			INTEGER NOT NULL,	-- FK
-    orientado_por	VARCHAR(11),	-- FK
+    area			INTEGER,
+    subarea			INTEGER,
+    orientado_por	VARCHAR(11),
     coorientado_por	VARCHAR(11),
     PRIMARY KEY(codigo),
-    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo),
-    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo),
-    FOREIGN KEY(orientado_por) REFERENCES PROFESSOR(cpf_usuario),
+    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY(orientado_por) REFERENCES PROFESSOR(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(coorientado_por) REFERENCES PROFESSOR(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS DOCUMENTO (
@@ -492,13 +546,16 @@ CREATE TABLE IF NOT EXISTS DOCUMENTO (
     documento	BLOB,
     PRIMARY KEY(codigo),
     FOREIGN KEY(cod_proj) REFERENCES PROJETO(codigo)
+    		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS PROJETO_TEM_ALUNO (
 	codigo_projeto		INTEGER NOT NULL,
     cpf_aluno			VARCHAR(11) NOT NULL,
-    FOREIGN KEY(codigo_projeto) REFERENCES PROJETO(codigo),
-    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario),
+    FOREIGN KEY(codigo_projeto) REFERENCES PROJETO(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario)
+    		ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT pk_projeto_tem_aluno PRIMARY KEY(codigo_projeto, cpf_aluno)
 );
 
@@ -511,6 +568,7 @@ CREATE TABLE IF NOT EXISTS BENEFICIO (
     cpf_funcionario		VARCHAR(11),
     PRIMARY KEY(codigo),
     FOREIGN KEY(cpf_funcionario) REFERENCES FUNCIONARIO(cpf)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS TRABALHO_ACADEMICO (
@@ -523,9 +581,12 @@ CREATE TABLE IF NOT EXISTS TRABALHO_ACADEMICO (
 							'DISSERTACAO'),
 	cpf_aluno		VARCHAR(11),
     PRIMARY KEY(codigo),
-    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo),
-    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo),
+    FOREIGN KEY(area) REFERENCES AREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY(subarea) REFERENCES SUBAREA_CONHECIMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY(cpf_aluno) REFERENCES ALUNO(cpf_usuario)
+			ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS BANCA_EXAMINADORA (
@@ -545,7 +606,9 @@ CREATE TABLE IF NOT EXISTS PARCELA (
     data_vencimento	DATE,
     pago			BOOLEAN,
     juros			INTEGER,
-    FOREIGN KEY(cod_pagamento) REFERENCES PAGAMENTO(codigo),
-    FOREIGN KEY(juros) REFERENCES JURO(codigo),
+    FOREIGN KEY(cod_pagamento) REFERENCES PAGAMENTO(codigo)
+			ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(juros) REFERENCES JURO(codigo)
+			ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT pk_parcela PRIMARY KEY(sequencial, cod_pagamento)
 );
