@@ -1,0 +1,91 @@
+
+public class Faculdade {
+	String   cnpj;
+	String  nome_fantasia;
+	Boolean possui_faculdade;
+	String  telefone1;
+	String  telefone2;
+	String  email;
+	String  cep;
+	String  num_end;
+	
+	
+	/*Construtor*/
+	public Faculdade(String cnpj, String nome_fantasia, Boolean possui_faculdade, String telefone1, String telefone2,
+			String email, String cep, String num_end) {
+		super();
+		this.cnpj = cnpj;
+		this.nome_fantasia = nome_fantasia;
+		this.possui_faculdade = possui_faculdade;
+		this.telefone1 = telefone1;
+		this.telefone2 = telefone2;
+		this.email = email;
+		this.cep = cep;
+		this.num_end = num_end;
+	}
+	
+	
+	/*Gets and Sets*/
+	
+	
+	public String getCnpj() {
+		return cnpj;
+	}
+	
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+	public String getNome_fantasia() {
+		return nome_fantasia;
+	}
+	public void setNome_fantasia(String nome_fantasia) {
+		this.nome_fantasia = nome_fantasia;
+	}
+	public Boolean getPossui_faculdade() {
+		return possui_faculdade;
+	}
+	public void setPossui_faculdade(Boolean possui_faculdade) {
+		this.possui_faculdade = possui_faculdade;
+	}
+	public String getTelefone1() {
+		return telefone1;
+	}
+	public void setTelefone1(String telefone1) {
+		this.telefone1 = telefone1;
+	}
+	public String getTelefone2() {
+		return telefone2;
+	}
+	public void setTelefone2(String telefone2) {
+		this.telefone2 = telefone2;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getCep() {
+		return cep;
+	}
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+	public String getNum_end() {
+		return num_end;
+	}
+	public void setNum_end(String num_end) {
+		this.num_end = num_end;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Faculdade [cnpj=" + cnpj + ", nome_fantasia=" + nome_fantasia + ", possui_faculdade=" + possui_faculdade
+				+ ", telefone1=" + telefone1 + ", telefone2=" + telefone2 + ", email=" + email + ", cep=" + cep
+				+ ", num_end=" + num_end + "]";
+	}
+	
+	
+	
+}
